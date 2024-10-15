@@ -23,10 +23,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         return validated_data
     
 
-class LoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username','password']
+class LoginSerializer(serializers.Serializer):
+    username= serializers.CharField()
+    password= serializers.CharField()
 
     def validate(self,data):
         if not User.objects.filter(username=data['username']).exists():
@@ -37,7 +36,7 @@ class LoginSerializer(serializers.ModelSerializer):
         user = authenticate(username=data['username'],password=data['password'])
 
         if not user:
-            return {"message":"The user account is not valid!"}
+            return {"message":"The user account is not valid!","data":{}}
         
         refresh=RefreshToken.for_user(user)
         
